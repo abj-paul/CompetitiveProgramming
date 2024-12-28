@@ -1,0 +1,70 @@
+#include<bits/stdc++.h>
+using namespace std;
+
+const int directions[][4] = { //left,right,up,down
+    {0,0,0,0},
+    {-1,1,-1,1}, // all direction pipe
+    {0,0,-1,1},
+    {-1,1,0,0},
+    {0,1,-1,0},
+    {0,1,0,1},
+    {-1,0,0,1},
+    {-1,0,-1,0}
+};
+
+// Function Prototype
+int calculate_highest_exploration(int n, int m, int r, int c, int l, const vector<vector<int>>& grid);
+void dfs(int i, int j, int l, int& explored_pipe_count, const vector<vector<int>>& grid, vector<vector<int>>& visited);
+
+int main() {
+    int num_of_test_cases;
+    cin >> num_of_test_cases;
+
+    for (int tc = 0; tc < num_of_test_cases; tc++) {
+        int n, m, r, c, l;
+        cin >> n >> m >> r >> c >> l;
+        vector<vector<int>> grid(n, vector<int>(m));
+        for (int i = 0; i < n; i++) {
+            for (int j = 0; j < m; j++) cin >> grid[i][j];
+        }
+
+        cout << calculate_highest_exploration(n, m, r, c, l, grid) << endl;
+    }
+    return 0;
+}
+
+int calculate_highest_exploration(int n, int m, int r, int c, int l, const vector<vector<int>>& grid) {
+    vector<vector<int>> visited(n, vector<int>(m, 0)); // WHITE = 0, GRAY = 1, BLACK = 2
+
+    int explored_pipe_count = 0;
+    dfs(r, c, l, explored_pipe_count, grid, visited);
+    return explored_pipe_count;
+}
+
+void dfs(int i, int j, int l, int& explored_pipe_count, const vector<vector<int>>& grid, vector<vector<int>>& visited) {
+    int n = grid.size();
+    int m = grid[0].size();
+
+    if (i < 0 || i >= n || j < 0 || j >= m || visited[i][j] == 1 || l <= 0) return;
+
+    if (visited[i][j] == 0) { // WHITE
+        explored_pipe_count++;
+        visited[i][j] = 1; // GRAY
+    }
+
+    int left = directions[grid[i][j]][0];
+    int right = directions[grid[i][j]][1];
+    int up = directions[grid[i][j]][2];
+    int down = directions[grid[i][j]][3];
+
+    if (j + left >= 0 && j + left < m && directions[grid[i][j + left]][1] == 1)
+        dfs(i, j + left, l - 1, explored_pipe_count, grid, visited);
+    if (j + right >= 0 && j + right < m && directions[grid[i][j + right]][0] == -1)
+        dfs(i, j + right, l - 1, explored_pipe_count, grid, visited);
+    if (i + up >= 0 && i + up < n && directions[grid[i + up][j]][3] == 1)
+        dfs(i + up, j, l - 1, explored_pipe_count, grid, visited);
+    if (i + down >= 0 && i + down < n && directions[grid[i + down][j]][2] == -1)
+        dfs(i + down, j, l - 1, explored_pipe_count, grid, visited);
+
+    visited[i][j] = 2; // BLACK
+}
