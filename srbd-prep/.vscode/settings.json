@@ -14,6 +14,10 @@
         "span": "cpp",
         "utility": "cpp",
         "random": "cpp",
-        "iterator": "cpp"
+        "iterator": "cpp",
+        "numbers": "cpp",
+        "chrono": "cpp",
+        "vector": "cpp",
+        "unordered_map": "cpp"
     }
 }
